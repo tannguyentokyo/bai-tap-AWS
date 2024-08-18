@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: testmysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: "123"
+    ports:
+      - "3309:3306"
+    volumes:
+      - /var/lib/mysql
+
+  backend:
+    build: ./spring_demo2
+    container_name: "be"
+    environment:
+      SPRING_SOURCE: "jdbc:mysql://mysql:3309/test"
+      SPRING_USER: root
+      SPRING_PASSWORD: root
+    ports: 
+      - "9091:9090"
+    depends_on: 
+      - mysql
+
+  frontend:
+    build: ./reactjs_demo
+    container_name: "fe"
+    ports: 
+      - "3001:3000"
